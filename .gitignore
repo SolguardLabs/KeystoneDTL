@@ -1,0 +1,17 @@
+/build/
+/dist/
+/coverage/
+/node_modules/
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.dll
+*.dylib
+*.exe
+*.pdb
+*.log
+.env
+.env.*
+vulnerability.md

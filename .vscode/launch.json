@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run scenario",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/kdtl_scenario",
+            "args": ["open-basic"],
+            "cwd": "${workspaceFolder}",
+            "MIMode": "gdb",
+            "preLaunchTask": "build native"
+        }
+    ]
+}

@@ -1,0 +1,8 @@
+{
+    "recommendations": [
+        "ms-vscode.cpptools",
+        "xaver.clang-format",
+        "github.vscode-github-actions",
+        "dbaeumer.vscode-eslint"
+    ]
+}

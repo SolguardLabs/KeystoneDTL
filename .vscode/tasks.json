@@ -1,0 +1,24 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build native",
+            "type": "shell",
+            "command": "node scripts/build-native.mjs",
+            "problemMatcher": "$gcc",
+            "group": "build"
+        },
+        {
+            "label": "test",
+            "type": "shell",
+            "command": "node --test \"tests/node/*.test.js\"",
+            "problemMatcher": []
+        },
+        {
+            "label": "ci",
+            "type": "shell",
+            "command": "bash scripts/ci.sh",
+            "problemMatcher": "$gcc"
+        }
+    ]
+}
