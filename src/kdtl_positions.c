@@ -25,8 +25,7 @@ static kdtl_status validate_terms(kdtl_engine *engine, const kdtl_route_terms *t
         return kdtl_fail(engine, KDTL_ERR_LIMIT, "guarantee exceeds window policy");
     }
 
-    indexed =
-        kdtl_debt_indexed_active(engine, terms->operator_id, terms->asset, terms->opened_at);
+    indexed = kdtl_debt_indexed_active(engine, terms->operator_id, terms->asset, terms->opened_at);
     if (!kdtl_amount_add(indexed, terms->guarantee, &projected)) {
         return kdtl_fail(engine, KDTL_ERR_OVERFLOW, "risk projection overflow");
     }
@@ -249,8 +248,8 @@ kdtl_status kdtl_move_position(kdtl_engine *engine, const kdtl_move_request *req
 
     note = request->reason[0] == '\0' ? "rewindow" : request->reason;
     return kdtl_record_event(engine, KDTL_EVENT_POSITION_REWINDOWED, request->now,
-                             position->operator_id, position->asset, position->id,
-                             position->locked, note);
+                             position->operator_id, position->asset, position->id, position->locked,
+                             note);
 }
 
 kdtl_status kdtl_cancel_position(kdtl_engine *engine, const kdtl_cancel_request *request) {
@@ -287,8 +286,8 @@ kdtl_status kdtl_cancel_position(kdtl_engine *engine, const kdtl_cancel_request 
     } else {
         status = kdtl_debit_locked(engine, position->payer, position->asset, position->locked);
         if (status == KDTL_OK) {
-            status = kdtl_credit_liquid(engine, request->refund_to, position->asset,
-                                        position->locked);
+            status =
+                kdtl_credit_liquid(engine, request->refund_to, position->asset, position->locked);
         }
     }
     if (status != KDTL_OK) {
@@ -299,11 +298,10 @@ kdtl_status kdtl_cancel_position(kdtl_engine *engine, const kdtl_cancel_request 
     position->locked = 0u;
     position->state = KDTL_POSITION_CANCELLED;
     position->updated_at = request->now;
-    (void)kdtl_limit_release(engine, position->operator_id, position->asset,
-                             position->window_start, position->window_end, position->guarantee);
-    (void)kdtl_debt_release(engine, position->operator_id, position->asset,
-                            position->window_start, position->window_end, position->guarantee,
-                            request->now);
+    (void)kdtl_limit_release(engine, position->operator_id, position->asset, position->window_start,
+                             position->window_end, position->guarantee);
+    (void)kdtl_debt_release(engine, position->operator_id, position->asset, position->window_start,
+                            position->window_end, position->guarantee, request->now);
 
     return kdtl_record_event(engine, KDTL_EVENT_POSITION_CANCELLED, request->now,
                              position->operator_id, position->asset, position->id,
@@ -320,7 +318,8 @@ kdtl_status kdtl_expire_positions(kdtl_engine *engine, kdtl_timestamp now, uint3
 
     for (size_t i = 0; i < engine->position_count; i++) {
         kdtl_position_record *position = &engine->positions[i];
-        if (!position->used || position->state != KDTL_POSITION_OPEN || position->expires_at > now) {
+        if (!position->used || position->state != KDTL_POSITION_OPEN ||
+            position->expires_at > now) {
             continue;
         }
 
@@ -336,11 +335,10 @@ kdtl_status kdtl_expire_positions(kdtl_engine *engine, kdtl_timestamp now, uint3
         position->state = KDTL_POSITION_EXPIRED;
         position->updated_at = now;
         (void)kdtl_limit_release(engine, position->operator_id, position->asset,
-                                 position->window_start, position->window_end,
-                                 position->guarantee);
+                                 position->window_start, position->window_end, position->guarantee);
         (void)kdtl_debt_release(engine, position->operator_id, position->asset,
-                                position->window_start, position->window_end,
-                                position->guarantee, now);
+                                position->window_start, position->window_end, position->guarantee,
+                                now);
         (void)kdtl_record_event(engine, KDTL_EVENT_POSITION_EXPIRED, now, position->operator_id,
                                 position->asset, position->id, position->refunded, "expire");
         count++;
@@ -360,8 +358,8 @@ kdtl_amount kdtl_positions_claimable_open(const kdtl_engine *engine, const char 
         const kdtl_position_record *position = &engine->positions[i];
         kdtl_amount next;
         if (!position->used || position->state != KDTL_POSITION_OPEN ||
-            !kdtl_id_eq(position->operator_id, operator_id) || !kdtl_id_eq(position->asset, asset) ||
-            position->expires_at <= as_of) {
+            !kdtl_id_eq(position->operator_id, operator_id) ||
+            !kdtl_id_eq(position->asset, asset) || position->expires_at <= as_of) {
             continue;
         }
         if (kdtl_amount_add(total, position->locked, &next)) {

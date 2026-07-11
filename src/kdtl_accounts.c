@@ -80,8 +80,7 @@ kdtl_status kdtl_register_account(kdtl_engine *engine, const char *account) {
     if (!kdtl_copy_id(record->account, sizeof(record->account), account)) {
         return kdtl_fail(engine, KDTL_ERR_ARGUMENT, "invalid account id");
     }
-    return kdtl_record_event(engine, KDTL_EVENT_ACCOUNT_REGISTERED, 0u, "", "", 0u, 0u,
-                             "account");
+    return kdtl_record_event(engine, KDTL_EVENT_ACCOUNT_REGISTERED, 0u, "", "", 0u, 0u, "account");
 }
 
 kdtl_status kdtl_deposit(kdtl_engine *engine, const char *account, const char *asset,

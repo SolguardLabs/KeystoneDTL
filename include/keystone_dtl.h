@@ -233,8 +233,7 @@ kdtl_status kdtl_expire_positions(kdtl_engine *engine, kdtl_timestamp now, uint3
 kdtl_status kdtl_get_position(const kdtl_engine *engine, kdtl_position_id id,
                               kdtl_position_view *out);
 kdtl_status kdtl_get_operator_risk(const kdtl_engine *engine, const char *operator_id,
-                                   const char *asset, kdtl_timestamp as_of,
-                                   kdtl_risk_view *out);
+                                   const char *asset, kdtl_timestamp as_of, kdtl_risk_view *out);
 kdtl_status kdtl_get_account(const kdtl_engine *engine, const char *account, const char *asset,
                              kdtl_account_view *out);
 kdtl_status kdtl_get_asset(const kdtl_engine *engine, const char *asset, kdtl_asset_view *out);

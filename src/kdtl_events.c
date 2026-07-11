@@ -4,8 +4,7 @@
 
 kdtl_status kdtl_record_event(kdtl_engine *engine, kdtl_event_kind kind, kdtl_timestamp at,
                               const char *operator_id, const char *asset,
-                              kdtl_position_id position_id, kdtl_amount amount,
-                              const char *note) {
+                              kdtl_position_id position_id, kdtl_amount amount, const char *note) {
     kdtl_event_record *record;
 
     if (engine == NULL) {

@@ -63,8 +63,8 @@ kdtl_status kdtl_liquidate_position(kdtl_engine *engine, const kdtl_liquidation_
     position->state = KDTL_POSITION_LIQUIDATED;
     position->updated_at = claim->now;
 
-    (void)kdtl_limit_release(engine, position->operator_id, position->asset,
-                             position->window_start, position->window_end, position->guarantee);
+    (void)kdtl_limit_release(engine, position->operator_id, position->asset, position->window_start,
+                             position->window_end, position->guarantee);
     (void)kdtl_debt_claim(engine, position->operator_id, position->asset, position->window_start,
                           position->window_end, position->guarantee, claim->now);
 

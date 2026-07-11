@@ -31,8 +31,7 @@ static uint32_t count_accounts_with_asset(const kdtl_engine *engine, int asset_i
 }
 
 static void count_positions_for_asset(const kdtl_engine *engine, const char *asset,
-                                      uint32_t *open_positions,
-                                      uint32_t *terminal_positions) {
+                                      uint32_t *open_positions, uint32_t *terminal_positions) {
     *open_positions = 0u;
     *terminal_positions = 0u;
 

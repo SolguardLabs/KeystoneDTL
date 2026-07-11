@@ -133,8 +133,7 @@ int kdtl_find_asset_index(const kdtl_engine *engine, const char *asset);
 int kdtl_find_account_index(const kdtl_engine *engine, const char *account);
 kdtl_policy_record *kdtl_find_policy(kdtl_engine *engine, const char *operator_id,
                                      const char *asset);
-const kdtl_policy_record *kdtl_find_policy_const(const kdtl_engine *engine,
-                                                 const char *operator_id,
+const kdtl_policy_record *kdtl_find_policy_const(const kdtl_engine *engine, const char *operator_id,
                                                  const char *asset);
 kdtl_position_record *kdtl_find_position(kdtl_engine *engine, kdtl_position_id id);
 const kdtl_position_record *kdtl_find_position_const(const kdtl_engine *engine,
@@ -174,9 +173,9 @@ kdtl_status kdtl_debt_release(kdtl_engine *engine, const char *operator_id, cons
 kdtl_status kdtl_debt_claim(kdtl_engine *engine, const char *operator_id, const char *asset,
                             kdtl_timestamp window_start, kdtl_timestamp window_end,
                             kdtl_amount amount, kdtl_timestamp now);
-kdtl_status kdtl_debt_mark_window(kdtl_engine *engine, const char *operator_id,
-                                  const char *asset, kdtl_timestamp window_start,
-                                  kdtl_timestamp window_end, kdtl_timestamp now);
+kdtl_status kdtl_debt_mark_window(kdtl_engine *engine, const char *operator_id, const char *asset,
+                                  kdtl_timestamp window_start, kdtl_timestamp window_end,
+                                  kdtl_timestamp now);
 kdtl_amount kdtl_debt_indexed_active(const kdtl_engine *engine, const char *operator_id,
                                      const char *asset, kdtl_timestamp as_of);
 uint32_t kdtl_debt_bucket_count(const kdtl_engine *engine, const char *operator_id,
@@ -191,8 +190,7 @@ uint32_t kdtl_positions_asset_open_count(const kdtl_engine *engine, const char *
 
 kdtl_status kdtl_record_event(kdtl_engine *engine, kdtl_event_kind kind, kdtl_timestamp at,
                               const char *operator_id, const char *asset,
-                              kdtl_position_id position_id, kdtl_amount amount,
-                              const char *note);
+                              kdtl_position_id position_id, kdtl_amount amount, const char *note);
 void kdtl_fill_position_view(const kdtl_position_record *record, kdtl_position_view *out);
 void kdtl_digest_hex(uint64_t value, char out[KDTL_HASH_LEN]);
 uint64_t kdtl_fnv1a_bytes(const void *data, size_t len, uint64_t seed);

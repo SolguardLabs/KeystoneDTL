@@ -151,8 +151,8 @@ static void print_catalog(void) {
 
 static void scenario_open_basic(void) {
     scenario_env env = setup_env(600000u, 300000u);
-    kdtl_route_terms terms = terms_for("route-open-001", 250000u, 1000u, 1000u, 1100u, 1600u,
-                                      1900u, 1u);
+    kdtl_route_terms terms =
+        terms_for("route-open-001", 250000u, 1000u, 1000u, 1100u, 1600u, 1900u, 1u);
     kdtl_position_id id;
     char position[2048];
     char risk[2048];
@@ -175,8 +175,8 @@ static void scenario_open_basic(void) {
 
 static void scenario_limit_update(void) {
     scenario_env env = setup_env(500000u, 250000u);
-    kdtl_route_terms terms = terms_for("route-limit-001", 100000u, 0u, 1000u, 1200u, 1800u,
-                                      2200u, 2u);
+    kdtl_route_terms terms =
+        terms_for("route-limit-001", 100000u, 0u, 1000u, 1200u, 1800u, 2200u, 2u);
     kdtl_operator_policy policy = policy_usdc(800000u, 400000u);
     kdtl_position_id id;
     char before[2048];
@@ -199,8 +199,8 @@ static void scenario_limit_update(void) {
 
 static void scenario_liquidation(void) {
     scenario_env env = setup_env(700000u, 350000u);
-    kdtl_route_terms terms = terms_for("route-liq-001", 300000u, 0u, 1000u, 1100u, 1700u,
-                                      2100u, 3u);
+    kdtl_route_terms terms =
+        terms_for("route-liq-001", 300000u, 0u, 1000u, 1100u, 1700u, 2100u, 3u);
     kdtl_liquidation_claim claim;
     kdtl_position_id id;
     char position[2048];
@@ -232,8 +232,8 @@ static void scenario_liquidation(void) {
 
 static void scenario_cancellation(void) {
     scenario_env env = setup_env(600000u, 300000u);
-    kdtl_route_terms terms = terms_for("route-cancel-001", 180000u, 0u, 1000u, 2000u, 2600u,
-                                      2900u, 4u);
+    kdtl_route_terms terms =
+        terms_for("route-cancel-001", 180000u, 0u, 1000u, 2000u, 2600u, 2900u, 4u);
     kdtl_cancel_request request;
     kdtl_position_id id;
     char position[2048];
@@ -262,8 +262,8 @@ static void scenario_cancellation(void) {
 
 static void scenario_expiration(void) {
     scenario_env env = setup_env(600000u, 300000u);
-    kdtl_route_terms terms = terms_for("route-expire-001", 90000u, 0u, 1000u, 1100u, 1400u,
-                                      1600u, 5u);
+    kdtl_route_terms terms =
+        terms_for("route-expire-001", 90000u, 0u, 1000u, 1100u, 1400u, 1600u, 5u);
     kdtl_position_id id;
     uint32_t expired = 0u;
     char position[2048];
@@ -286,8 +286,8 @@ static void scenario_expiration(void) {
 
 static void scenario_window_rollover(void) {
     scenario_env env = setup_env(500000u, 300000u);
-    kdtl_route_terms terms = terms_for("route-roll-001", 200000u, 0u, 1000u, 1000u, 1400u,
-                                      2400u, 6u);
+    kdtl_route_terms terms =
+        terms_for("route-roll-001", 200000u, 0u, 1000u, 1000u, 1400u, 2400u, 6u);
     kdtl_move_request request;
     kdtl_position_id id;
     char position[2048];
@@ -317,8 +317,8 @@ static void scenario_window_rollover(void) {
 
 static void scenario_event_journal(void) {
     scenario_env env = setup_env(650000u, 300000u);
-    kdtl_route_terms terms = terms_for("route-event-001", 125000u, 500u, 1000u, 1300u, 1700u,
-                                      2200u, 7u);
+    kdtl_route_terms terms =
+        terms_for("route-event-001", 125000u, 500u, 1000u, 1300u, 1700u, 2200u, 7u);
     kdtl_move_request request;
     kdtl_position_id id;
     char opened[1024];
@@ -348,10 +348,10 @@ static void scenario_event_journal(void) {
 
 static void scenario_rejections(void) {
     scenario_env env = setup_env(400000u, 200000u);
-    kdtl_route_terms oversize = terms_for("route-reject-001", 250000u, 0u, 1000u, 1200u, 1800u,
-                                         2200u, 8u);
-    kdtl_route_terms accepted = terms_for("route-reject-002", 150000u, 0u, 1000u, 1200u, 1800u,
-                                         2200u, 9u);
+    kdtl_route_terms oversize =
+        terms_for("route-reject-001", 250000u, 0u, 1000u, 1200u, 1800u, 2200u, 8u);
+    kdtl_route_terms accepted =
+        terms_for("route-reject-002", 150000u, 0u, 1000u, 1200u, 1800u, 2200u, 9u);
     kdtl_operator_policy lowered = policy_usdc(300000u, 100000u);
     kdtl_position_id id = 0u;
     kdtl_status oversize_status;
@@ -382,10 +382,10 @@ static void scenario_rejections(void) {
 
 static void scenario_operator_overview(void) {
     scenario_env env = setup_env(900000u, 450000u);
-    kdtl_route_terms first = terms_for("route-overview-001", 150000u, 700u, 1000u, 1200u,
-                                      1800u, 2300u, 10u);
-    kdtl_route_terms second = terms_for("route-overview-002", 175000u, 300u, 1000u, 1300u,
-                                       1900u, 2400u, 11u);
+    kdtl_route_terms first =
+        terms_for("route-overview-001", 150000u, 700u, 1000u, 1200u, 1800u, 2300u, 10u);
+    kdtl_route_terms second =
+        terms_for("route-overview-002", 175000u, 300u, 1000u, 1300u, 1900u, 2400u, 11u);
     kdtl_position_id first_id;
     kdtl_position_id second_id;
     char asset[2048];

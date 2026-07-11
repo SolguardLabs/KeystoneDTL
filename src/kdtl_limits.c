@@ -112,8 +112,7 @@ kdtl_policy_record *kdtl_find_policy(kdtl_engine *engine, const char *operator_i
     return NULL;
 }
 
-const kdtl_policy_record *kdtl_find_policy_const(const kdtl_engine *engine,
-                                                 const char *operator_id,
+const kdtl_policy_record *kdtl_find_policy_const(const kdtl_engine *engine, const char *operator_id,
                                                  const char *asset) {
     if (engine == NULL || operator_id == NULL || asset == NULL) {
         return NULL;
@@ -209,7 +208,8 @@ kdtl_status kdtl_limit_reserve(kdtl_engine *engine, const kdtl_operator_policy *
     kdtl_limit_bucket *bucket;
     kdtl_amount next;
 
-    if (engine == NULL || policy == NULL || amount == 0u || !window_valid(window_start, window_end)) {
+    if (engine == NULL || policy == NULL || amount == 0u ||
+        !window_valid(window_start, window_end)) {
         return KDTL_ERR_ARGUMENT;
     }
 
@@ -383,9 +383,9 @@ kdtl_status kdtl_debt_claim(kdtl_engine *engine, const char *operator_id, const 
     return KDTL_OK;
 }
 
-kdtl_status kdtl_debt_mark_window(kdtl_engine *engine, const char *operator_id,
-                                  const char *asset, kdtl_timestamp window_start,
-                                  kdtl_timestamp window_end, kdtl_timestamp now) {
+kdtl_status kdtl_debt_mark_window(kdtl_engine *engine, const char *operator_id, const char *asset,
+                                  kdtl_timestamp window_start, kdtl_timestamp window_end,
+                                  kdtl_timestamp now) {
     kdtl_debt_bucket *bucket;
 
     if (engine == NULL || operator_id == NULL || asset == NULL ||
@@ -439,8 +439,7 @@ uint32_t kdtl_debt_bucket_count(const kdtl_engine *engine, const char *operator_
 }
 
 kdtl_status kdtl_get_operator_risk(const kdtl_engine *engine, const char *operator_id,
-                                   const char *asset, kdtl_timestamp as_of,
-                                   kdtl_risk_view *out) {
+                                   const char *asset, kdtl_timestamp as_of, kdtl_risk_view *out) {
     const kdtl_policy_record *policy;
     kdtl_amount indexed;
 

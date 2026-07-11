@@ -85,7 +85,6 @@ void kdtl_digest_hex(uint64_t value, char out[KDTL_HASH_LEN]) {
     uint64_t z = value + 0xbf58476d1ce4e5b9ull;
     uint64_t w = value ^ (value >> 32u);
 
-    (void)snprintf(out, KDTL_HASH_LEN, "%016llx%016llx%016llx%016llx",
-                   (unsigned long long)x, (unsigned long long)y, (unsigned long long)z,
-                   (unsigned long long)w);
+    (void)snprintf(out, KDTL_HASH_LEN, "%016llx%016llx%016llx%016llx", (unsigned long long)x,
+                   (unsigned long long)y, (unsigned long long)z, (unsigned long long)w);
 }
