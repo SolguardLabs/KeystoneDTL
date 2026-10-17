@@ -1,14 +1,14 @@
 {
     "name": "keystone-dtl",
-    "version": "0.1.0",
+    "version": "1.0.0",
     "private": true,
     "type": "module",
     "description": "Tests de integracion Node para la libreria C Keystone DTL.",
     "scripts": {
         "build": "node scripts/build-native.mjs",
-        "test": "node --test \"tests/node/*.test.js\"",
+        "test": "node scripts/build-native.mjs && node --test \"tests/node/*.test.js\"",
         "test:all": "node scripts/check-js.mjs && node scripts/build-native.mjs && node --test \"tests/node/*.test.js\"",
-        "ci": "node scripts/check-js.mjs && node scripts/build-native.mjs && node --test \"tests/node/*.test.js\"",
+        "ci": "node scripts/check-js.mjs && node scripts/verify-public.mjs && node scripts/build-native.mjs && node --test \"tests/node/*.test.js\"",
         "fmt": "prettier --write --config .prettierrc --ignore-path .prettierignore \"**/*.{js,mjs,json,md,yml,yaml}\"",
         "fmt:check": "prettier --check --config .prettierrc --ignore-path .prettierignore \"**/*.{js,mjs,json,md,yml,yaml}\""
     },
@@ -16,6 +16,7 @@
         "node": ">=20.0.0"
     },
     "devDependencies": {
+        "clang-format": "^1.8.0",
         "prettier": "^3.8.3"
     }
 }

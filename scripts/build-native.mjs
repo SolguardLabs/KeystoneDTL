@@ -18,8 +18,11 @@ const sources = [
     "src/kdtl_ids.c",
     "src/kdtl_limits.c",
     "src/kdtl_positions.c",
+    "src/kdtl_policy.c",
     "src/kdtl_reconcile.c",
+    "src/kdtl_reporting.c",
     "src/kdtl_settlement.c",
+    "src/kdtl_stress.c",
     "tools/kdtl_scenario.c",
 ].map((path) => join(root, path));
 
@@ -65,6 +68,54 @@ function windowsCompilerCandidates() {
     return candidates;
 }
 
+function visualStudioEnvironment() {
+    if (!isWindows) {
+        return null;
+    }
+
+    const vswhereCandidates = [
+        process.env["ProgramFiles(x86)"]
+            ? join(
+                  process.env["ProgramFiles(x86)"],
+                  "Microsoft Visual Studio",
+                  "Installer",
+                  "vswhere.exe",
+              )
+            : "",
+        process.env.ProgramFiles
+            ? join(process.env.ProgramFiles, "Microsoft Visual Studio", "Installer", "vswhere.exe")
+            : "",
+    ];
+
+    for (const vswhere of vswhereCandidates) {
+        if (!vswhere || !existsSync(vswhere)) {
+            continue;
+        }
+        const result = spawnSync(
+            vswhere,
+            [
+                "-latest",
+                "-products",
+                "*",
+                "-requires",
+                "Microsoft.VisualStudio.Component.VC.Tools.x86.x64",
+                "-property",
+                "installationPath",
+            ],
+            { cwd: root, encoding: "utf8", shell: false },
+        );
+        const installation = result.status === 0 ? result.stdout.trim() : "";
+        const vcvars = installation
+            ? join(installation, "VC", "Auxiliary", "Build", "vcvars64.bat")
+            : "";
+        if (vcvars && existsSync(vcvars)) {
+            return vcvars;
+        }
+    }
+
+    return null;
+}
+
 function pickCompiler() {
     const requested = process.env.CC;
     const candidates = requested
@@ -72,29 +123,52 @@ function pickCompiler() {
         : ["cc", "gcc", "clang", ...windowsCompilerCandidates()];
     for (const candidate of candidates) {
         if (commandExists(candidate)) {
-            return candidate;
+            return { kind: "gnu", command: candidate };
         }
+    }
+
+    const vcvars = visualStudioEnvironment();
+    if (vcvars) {
+        return { kind: "msvc", command: "cl", vcvars };
     }
     throw new Error("No se encontro un compilador C compatible. Define CC o instala gcc/clang/cc.");
 }
 
 mkdirSync(buildDir, { recursive: true });
 const compiler = pickCompiler();
-const args = [
-    "-std=c11",
-    "-Wall",
-    "-Wextra",
-    "-Werror",
-    "-pedantic",
-    "-O2",
-    "-Iinclude",
-    "-Isrc",
-    ...sources,
-    "-o",
-    output,
-];
+let result;
 
-const result = spawnSync(compiler, args, { cwd: root, stdio: "inherit", shell: false });
+if (compiler.kind === "msvc") {
+    const quotedSources = sources.map((source) => `"${source}"`).join(" ");
+    const compile = [
+        "cl /nologo /std:c11 /W4 /WX /O2 /D_CRT_SECURE_NO_WARNINGS",
+        "/Iinclude /Isrc",
+        `/Fo"${buildDir}\\\\"`,
+        quotedSources,
+        `/Fe:"${output}"`,
+    ].join(" ");
+    const command = `call "${compiler.vcvars}" >nul && ${compile}`;
+    result = spawnSync(command, {
+        cwd: root,
+        stdio: "inherit",
+        shell: true,
+    });
+} else {
+    const args = [
+        "-std=c11",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-pedantic",
+        "-O2",
+        "-Iinclude",
+        "-Isrc",
+        ...sources,
+        "-o",
+        output,
+    ];
+    result = spawnSync(compiler.command, args, { cwd: root, stdio: "inherit", shell: false });
+}
 if (result.status !== 0) {
     process.exit(result.status ?? 1);
 }

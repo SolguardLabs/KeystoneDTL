@@ -141,6 +141,8 @@ La CLI `kdtl_scenario` expone escenarios JSON pensados para tests de contrato:
 - `event-journal`: eventos de apertura y movimiento.
 - `rejections`: rechazos esperados por politica.
 - `operator-overview`: catalogo de activo y utilizacion de politica.
+- `stress-report`: perdida, reservas, cobertura, liquidez y concentracion.
+- `policy-review`: clasificacion de propuesta y excepcion de corredor.
 
 Estos escenarios son pequenos a proposito: deben ser faciles de inspeccionar,
 deterministas y estables entre plataformas.

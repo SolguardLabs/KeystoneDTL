@@ -12,6 +12,31 @@ compacto: no requiere servicios externos, usa aritmetica entera comprobada y
 expone una API estable desde `include/keystone_dtl.h`. La suite JavaScript
 ejecuta escenarios contra una CLI minima que enlaza la libreria C.
 
+## Documentacion
+
+| Dominio                          | Documento                                      |
+| -------------------------------- | ---------------------------------------------- |
+| Componentes y confianza          | [Arquitectura](./docs/ARQUITECTURA.md)         |
+| Garantias, primas y liquidacion  | [Modelo economico](./docs/MODELO_ECONOMICO.md) |
+| Corredores y escenarios adversos | [Riesgo](./docs/RIESGO.md)                     |
+| API, errores y snapshots         | [Integracion](./docs/INTEGRATION.md)           |
+| Despliegue y respuesta           | [Operacion](./docs/OPERACION.md)               |
+| Cambios de politica              | [Gobernanza](./docs/GOBERNANZA.md)             |
+| Trazabilidad de versiones        | [Proceso de release](./docs/RELEASE.md)        |
+
+```mermaid
+flowchart LR
+    A[Servicio de routing] --> K[Keystone DTL]
+    K --> P[Posiciones]
+    K --> L[Limites por ventana]
+    K --> D[Indice de deuda]
+    K --> E[Diario de eventos]
+    K --> R[Reconciliacion]
+    O[Operador] --> A
+    T[Motor de tesoreria] --> A
+    S[Stress y politica] -. evaluacion sin estado .-> A
+```
+
 ## Componentes
 
 - `include/keystone_dtl.h`: API publica de la libreria.
@@ -19,6 +44,8 @@ ejecuta escenarios contra una CLI minima que enlaza la libreria C.
 - `src/kdtl_limits.c`: politicas por operador, activo y ventana.
 - `src/kdtl_positions.c`: apertura, reventaneo, cancelacion y expiracion.
 - `src/kdtl_settlement.c`: liquidacion y reconciliacion de posiciones.
+- `src/kdtl_stress.c`: escenarios de perdida, liquidez, reservas y concentracion.
+- `src/kdtl_policy.c`: clasificacion de propuestas de politica.
 - `src/kdtl_codec.c`: serializacion JSON de vistas de auditoria.
 - `tools/kdtl_scenario.c`: ejecutable de escenarios usado por los tests.
 - `tests/node/`: tests de contrato e integracion con `node:test`.
@@ -48,6 +75,8 @@ Ejecutar un escenario:
 ./build/kdtl_scenario liquidation
 ./build/kdtl_scenario window-rollover
 ./build/kdtl_scenario operator-overview
+./build/kdtl_scenario stress-report
+./build/kdtl_scenario policy-review
 ```
 
 Ejecutar la suite publica:
@@ -137,10 +166,13 @@ Para exponer datos a herramientas externas se pueden serializar vistas con:
 
 GitHub Actions instala Node y un toolchain C, ejecuta formato C cuando
 `clang-format` esta disponible, compila la libreria y lanza los tests
-JavaScript. Dependabot cubre dependencias npm y GitHub Actions.
+JavaScript tanto en Linux como en Windows. Dependabot cubre dependencias npm y
+GitHub Actions. La integridad de release comprueba ademas que `main`,
+`production` y la etiqueta anotada convergen en el mismo commit.
 
-## Estado
+## Compatibilidad
 
-Proyecto de laboratorio para auditoria de logica economica. La documentacion
-publica describe el comportamiento esperado de la libreria y los tests cubren
-flujos ordinarios de integracion.
+La linea 1.0 usa C11 y Node.js 20 o superior. El build nativo detecta
+GCC/Clang en sistemas Unix y Build Tools de Visual Studio en Windows. Los JSON
+de la CLI son contratos de integracion versionados; cualquier cambio de campo
+requiere changelog y prueba de compatibilidad.

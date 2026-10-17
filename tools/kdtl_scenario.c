@@ -146,7 +146,8 @@ static void print_catalog(void) {
     printf("{\"scenario\":\"catalog\",\"library\":\"KeystoneDTL\",\"language\":\"C11\","
            "\"wire\":\"json\",\"scenarios\":[\"open-basic\",\"limit-update\","
            "\"liquidation\",\"cancellation\",\"expiration\",\"window-rollover\","
-           "\"event-journal\",\"rejections\",\"operator-overview\"]}\n");
+           "\"event-journal\",\"rejections\",\"operator-overview\","
+           "\"stress-report\",\"policy-review\"]}\n");
 }
 
 static void scenario_open_basic(void) {
@@ -411,6 +412,65 @@ static void scenario_operator_overview(void) {
     kdtl_engine_destroy(env.engine);
 }
 
+static void scenario_stress_report(void) {
+    kdtl_stress_snapshot snapshot;
+    kdtl_stress_scenario scenario;
+    kdtl_stress_result result;
+    char report[2048];
+
+    memset(&snapshot, 0, sizeof(snapshot));
+    snapshot.funded_liquidity = 1000000u;
+    snapshot.active_guarantee = 600000u;
+    snapshot.pending_settlement = 100000u;
+    snapshot.protocol_reserves = 80000u;
+    snapshot.largest_route = 240000u;
+
+    memset(&scenario, 0, sizeof(scenario));
+    scenario.default_bps = 2500u;
+    scenario.recovery_bps = 4000u;
+    scenario.liquidation_cost_bps = 1000u;
+    scenario.liquidity_haircut_bps = 2000u;
+    scenario.reserve_haircut_bps = 2500u;
+    scenario.minimum_coverage_bps = 8000u;
+    scenario.maximum_concentration_bps = 4500u;
+
+    must(NULL, "evaluate stress", kdtl_evaluate_stress(&snapshot, &scenario, &result));
+    must(NULL, "format stress", kdtl_format_stress_json(&result, report, sizeof(report)));
+    printf("{\"scenario\":\"stress-report\",\"report\":%s}\n", report);
+}
+
+static void scenario_policy_review(void) {
+    kdtl_operator_policy current = policy_usdc(500000u, 250000u);
+    kdtl_operator_policy proposed = policy_usdc(700000u, 350000u);
+    kdtl_operator_policy exception = policy_usdc(950000u, 500000u);
+    kdtl_policy_corridor corridor;
+    kdtl_policy_assessment reviewed;
+    kdtl_policy_assessment escalated;
+    char reviewed_json[1024];
+    char escalated_json[1024];
+
+    proposed.max_open_positions = 24u;
+    proposed.min_margin_bps = 1000u;
+    memset(&corridor, 0, sizeof(corridor));
+    corridor.maximum_active_debt = 900000u;
+    corridor.maximum_window_debt = 450000u;
+    corridor.maximum_open_positions = 32u;
+    corridor.minimum_margin_bps = 900u;
+    corridor.maximum_grace_seconds = 300u;
+
+    must(NULL, "review policy",
+         kdtl_review_operator_policy(&current, &proposed, &corridor, &reviewed));
+    must(NULL, "review exception",
+         kdtl_review_operator_policy(&proposed, &exception, &corridor, &escalated));
+    must(NULL, "format reviewed",
+         kdtl_format_policy_assessment_json(&reviewed, reviewed_json, sizeof(reviewed_json)));
+    must(NULL, "format escalated",
+         kdtl_format_policy_assessment_json(&escalated, escalated_json, sizeof(escalated_json)));
+
+    printf("{\"scenario\":\"policy-review\",\"reviewed\":%s,\"escalated\":%s}\n", reviewed_json,
+           escalated_json);
+}
+
 int main(int argc, char **argv) {
     const char *scenario = argc > 1 ? argv[1] : "catalog";
 
@@ -434,6 +494,10 @@ int main(int argc, char **argv) {
         scenario_rejections();
     } else if (strcmp(scenario, "operator-overview") == 0) {
         scenario_operator_overview();
+    } else if (strcmp(scenario, "stress-report") == 0) {
+        scenario_stress_report();
+    } else if (strcmp(scenario, "policy-review") == 0) {
+        scenario_policy_review();
     } else {
         fprintf(stderr, "unknown scenario: %s\n", scenario);
         return 1;

@@ -17,6 +17,18 @@ integracion.
   politica.
 - La liquidacion no puede pagar mas que la garantia bloqueada.
 - La cancelacion y expiracion deben liberar la garantia pendiente al pagador.
+- La exposicion aceptada debe permanecer dentro de los corredores de politica.
+- Los snapshots de riesgo, posiciones y reconciliacion deben proceder del mismo
+  estado confirmado.
+
+```mermaid
+flowchart LR
+    A[Recepcion privada] --> B[Reproduccion]
+    B --> C[Contencion]
+    C --> D[Correccion]
+    D --> E[Revision independiente]
+    E --> F[Distribucion coordinada]
+```
 
 ## Validaciones
 
@@ -56,7 +68,11 @@ Los snapshots de posicion, riesgo, cuenta, evento y reconciliacion estan
 pensados para compararse entre builds. Una diferencia de digest o de totales
 debe revisarse antes de promover el binario.
 
-## Reporte Interno
+## Reporte De Seguridad
+
+Comunique los hallazgos mediante el canal privado de avisos de seguridad del
+repositorio. No incluya detalles sensibles en incidencias o discusiones
+publicas antes de coordinar alcance y medidas operativas.
 
 Los reportes deben incluir:
 
@@ -69,3 +85,11 @@ Los reportes deben incluir:
 
 No se aceptan reportes basados solo en estilo, formato o supuestos que requieran
 modificar codigo fuente del integrador.
+
+## Controles De Entrega
+
+Una version mantenida debe compilar con advertencias tratadas como error, pasar
+los contratos Node en Linux y Windows, superar el control de superficie publica
+y conservar convergencia entre rama estable, rama de produccion, etiqueta y
+release. Estas comprobaciones reducen errores de distribucion, pero no
+sustituyen la revision del modelo economico.

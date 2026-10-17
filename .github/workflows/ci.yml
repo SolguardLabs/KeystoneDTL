@@ -2,19 +2,35 @@ name: ci
 
 on:
     push:
+        branches: ["main", "production", "release/**"]
     pull_request:
+    workflow_dispatch:
+
+permissions:
+    contents: read
+
+concurrency:
+    group: "ci-${{ github.workflow }}-${{ github.ref }}"
+    cancel-in-progress: true
 
 jobs:
     build-test:
-        runs-on: ubuntu-latest
+        name: Native ${{ matrix.os }}
+        strategy:
+            fail-fast: false
+            matrix:
+                os: [ubuntu-latest, windows-latest]
+        runs-on: ${{ matrix.os }}
+        timeout-minutes: 15
         steps:
-            - uses: actions/checkout@v4
-            - uses: actions/setup-node@v4
+            - uses: actions/checkout@v7
+            - uses: actions/setup-node@v6
               with:
                   node-version: 24
             - name: Install native toolchain
+              if: runner.os == 'Linux'
               run: sudo apt-get update && sudo apt-get install -y build-essential clang-format
             - name: Install JavaScript tooling
-              run: npm install
+              run: npm ci
             - name: Run CI
               run: bash scripts/ci.sh

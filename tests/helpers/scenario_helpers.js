@@ -12,7 +12,8 @@ const cache = new Map();
 let built = false;
 
 function ensureBuilt() {
-    if (built && existsSync(binary)) {
+    if (existsSync(binary)) {
+        built = true;
         return;
     }
     execFileSync(process.execPath, ["scripts/build-native.mjs"], {
