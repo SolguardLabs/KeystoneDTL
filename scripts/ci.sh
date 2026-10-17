@@ -9,5 +9,7 @@ if command -v clang-format >/dev/null 2>&1; then
 fi
 
 node scripts/check-js.mjs
+node_modules/.bin/prettier --check --config .prettierrc --ignore-path .prettierignore "**/*.{js,mjs,json,md,yml,yaml}"
+node scripts/verify-public.mjs
 node scripts/build-native.mjs
 node --test "tests/node/*.test.js"

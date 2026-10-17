@@ -19,5 +19,7 @@ test("catalog exposes supported scenario names", () => {
         "event-journal",
         "rejections",
         "operator-overview",
+        "stress-report",
+        "policy-review",
     ]);
 });

@@ -15,8 +15,11 @@ add_library(keystonedtl STATIC
     src/kdtl_ids.c
     src/kdtl_limits.c
     src/kdtl_positions.c
+    src/kdtl_policy.c
     src/kdtl_reconcile.c
+    src/kdtl_reporting.c
     src/kdtl_settlement.c
+    src/kdtl_stress.c
 )
 
 target_include_directories(keystonedtl PUBLIC include PRIVATE src)

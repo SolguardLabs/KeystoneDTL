@@ -14,8 +14,11 @@ LIB_SRCS := \
 	src/kdtl_ids.c \
 	src/kdtl_limits.c \
 	src/kdtl_positions.c \
+	src/kdtl_policy.c \
 	src/kdtl_reconcile.c \
-	src/kdtl_settlement.c
+	src/kdtl_reporting.c \
+	src/kdtl_settlement.c \
+	src/kdtl_stress.c
 
 LIB_OBJS := $(patsubst src/%.c,$(BUILD_DIR)/%.o,$(LIB_SRCS))
 SCENARIO := $(BUILD_DIR)/kdtl_scenario

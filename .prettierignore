@@ -2,7 +2,6 @@ build/
 dist/
 coverage/
 node_modules/
-vulnerability.md
 *.a
 *.lib
 *.so

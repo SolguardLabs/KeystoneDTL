@@ -207,6 +207,78 @@ typedef struct kdtl_event_view {
     char note[KDTL_REASON_LEN];
 } kdtl_event_view;
 
+typedef struct kdtl_stress_snapshot {
+    kdtl_amount funded_liquidity;
+    kdtl_amount active_guarantee;
+    kdtl_amount pending_settlement;
+    kdtl_amount protocol_reserves;
+    kdtl_amount largest_route;
+} kdtl_stress_snapshot;
+
+typedef struct kdtl_stress_scenario {
+    uint16_t default_bps;
+    uint16_t recovery_bps;
+    uint16_t liquidation_cost_bps;
+    uint16_t liquidity_haircut_bps;
+    uint16_t reserve_haircut_bps;
+    uint16_t minimum_coverage_bps;
+    uint16_t maximum_concentration_bps;
+} kdtl_stress_scenario;
+
+typedef struct kdtl_stress_result {
+    kdtl_amount performing_guarantee;
+    kdtl_amount defaulted_guarantee;
+    kdtl_amount gross_recovery;
+    kdtl_amount liquidation_cost;
+    kdtl_amount net_recovery;
+    kdtl_amount credit_loss;
+    kdtl_amount usable_reserves;
+    kdtl_amount reserve_absorption;
+    kdtl_amount residual_loss;
+    kdtl_amount stressed_liquidity;
+    kdtl_amount coverage_assets;
+    kdtl_amount required_buffer;
+    kdtl_amount buffer_surplus;
+    uint32_t coverage_bps;
+    uint32_t concentration_bps;
+    bool coverage_pass;
+    bool concentration_pass;
+    bool within_corridor;
+} kdtl_stress_result;
+
+typedef enum kdtl_review_tier {
+    KDTL_REVIEW_ROUTINE = 0,
+    KDTL_REVIEW_RISK = 1,
+    KDTL_REVIEW_TREASURY = 2,
+    KDTL_REVIEW_GOVERNANCE = 3
+} kdtl_review_tier;
+
+typedef struct kdtl_policy_corridor {
+    kdtl_amount maximum_active_debt;
+    kdtl_amount maximum_window_debt;
+    uint32_t maximum_open_positions;
+    uint16_t minimum_margin_bps;
+    uint32_t maximum_grace_seconds;
+} kdtl_policy_corridor;
+
+typedef struct kdtl_policy_assessment {
+    uint64_t change_flags;
+    kdtl_amount active_headroom;
+    kdtl_amount window_headroom;
+    uint32_t active_to_window_bps;
+    kdtl_review_tier review_tier;
+    bool structurally_valid;
+    bool within_corridor;
+} kdtl_policy_assessment;
+
+#define KDTL_POLICY_ACTIVE_DEBT_INCREASE (UINT64_C(1) << 0u)
+#define KDTL_POLICY_WINDOW_DEBT_INCREASE (UINT64_C(1) << 1u)
+#define KDTL_POLICY_OPEN_POSITIONS_INCREASE (UINT64_C(1) << 2u)
+#define KDTL_POLICY_MARGIN_DECREASE (UINT64_C(1) << 3u)
+#define KDTL_POLICY_GRACE_INCREASE (UINT64_C(1) << 4u)
+#define KDTL_POLICY_OPERATOR_CHANGE (UINT64_C(1) << 5u)
+#define KDTL_POLICY_ASSET_CHANGE (UINT64_C(1) << 6u)
+
 kdtl_engine *kdtl_engine_create(void);
 void kdtl_engine_destroy(kdtl_engine *engine);
 void kdtl_engine_reset(kdtl_engine *engine);
@@ -252,6 +324,17 @@ kdtl_status kdtl_format_policy_json(const kdtl_policy_view *view, char *buffer, 
 kdtl_status kdtl_format_reconciliation_json(const kdtl_reconciliation_view *view, char *buffer,
                                             size_t len);
 kdtl_status kdtl_format_event_json(const kdtl_event_view *view, char *buffer, size_t len);
+
+kdtl_status kdtl_evaluate_stress(const kdtl_stress_snapshot *snapshot,
+                                 const kdtl_stress_scenario *scenario, kdtl_stress_result *out);
+kdtl_status kdtl_review_operator_policy(const kdtl_operator_policy *current,
+                                        const kdtl_operator_policy *proposed,
+                                        const kdtl_policy_corridor *corridor,
+                                        kdtl_policy_assessment *out);
+const char *kdtl_review_tier_name(kdtl_review_tier tier);
+kdtl_status kdtl_format_stress_json(const kdtl_stress_result *view, char *buffer, size_t len);
+kdtl_status kdtl_format_policy_assessment_json(const kdtl_policy_assessment *view, char *buffer,
+                                               size_t len);
 
 uint64_t kdtl_hash_terms(const kdtl_route_terms *terms);
 uint64_t kdtl_hash_position_view(const kdtl_position_view *view);

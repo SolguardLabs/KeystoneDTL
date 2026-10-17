@@ -11,7 +11,7 @@
         {
             "label": "test",
             "type": "shell",
-            "command": "node --test \"tests/node/*.test.js\"",
+            "command": "npm test",
             "problemMatcher": []
         },
         {
